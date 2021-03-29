@@ -7,40 +7,39 @@
 //
 
 import UIKit
-class PhotosViewController: UIViewController {
+class StockViewController: UIViewController {
     @IBOutlet var imageView: UIImageView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       super.viewDidLoad()
         
-       print("running Fickr Viewer")
-        
+       print("Running Stock Profile Viewer")
        let url = FlickrAPI.recentPhotosURL()
        print("request url:")
        print(url)
-       
        let store = PhotoStore()
-        
        store.fetchRecentPhotos() {
+           // create a annoysmous function
             (photoResult) -> Void in
             switch photoResult {
             case let .Success(photos):
-                print("Successfully found \(photos.count) recent photos")
+                print("Successfully found \(photos) recent photos")
                 
                 if let firstPhoto = photos.first {
                     store.fetchImageForPhoto(firstPhoto) {
                         (imageResult) -> Void in
                         switch imageResult  {
-                        case let .Success(image): 
-                            self.imageView.image = image;
-                        case let .Failure(error): 
+                        case let .success(image): 
+                            OperationQueue.main.addOperation {
+                                self.imageView.image = image
+                            }
+                        case let .failure(error): 
                             print("ERROR downloading actual image: \(error)")
                         }
                     }
                 }
-            case let .Failure(error):
-                print("Error fetching recent photos: \(error)")
+            case let .failure(error):
+                print("Error fetching recent stock: \(error)")
             }
         }
         
