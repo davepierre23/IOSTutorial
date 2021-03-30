@@ -1,6 +1,6 @@
 //
 //  PhotoStore.swift
-//  FlickerViewer
+//  FinanceApp
 //
 //  Created by Dave Pierre on 2021-03-28.
 //

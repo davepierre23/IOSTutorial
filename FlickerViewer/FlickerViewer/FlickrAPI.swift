@@ -1,6 +1,6 @@
 //
 //  FlickrAPI.swift
-//  FlickerViewer
+//  FinanceApp
 //
 //  Created by Dave Pierre on 2021-03-28.
 //
@@ -8,17 +8,11 @@
 import Foundation
 import UIKit
 
-enum ImageResult {
-    case success(UIImage)
-    case failure(Error)
-}
 
 enum PhotoError: Error {
     case imageCreationError
 }
-enum Method: String {
-    case RecentPhotos = "flickr.photos.getRecent"
-}
+
 
 enum PhotoResult {
     case success([Photo])
@@ -30,6 +24,9 @@ enum FlickrError: Error {
 }
 
 struct FlickrAPI {
+    enum Method: String {
+        case RecentPhotos = "flickr.photos.getRecent"
+    }
    private static let baseURLString = "https://api.flickr.com/services/rest"
     private static let APIKey = "681f721d0b004e5e96e0befaf3da5141"
     
@@ -41,6 +38,21 @@ struct FlickrAPI {
             "api_key": APIKey,
             "extras": "url_h,date_taken"])
     }
+    private static func flickrURL(method: Method, parameters: [String:String]?) -> URL {
+        var components = URLComponents(string: baseURLString)!
+        var queryItems = [URLQueryItem]()
+       
+        if let additionalParams = parameters {
+           for(key, value) in additionalParams {
+               let item = URLQueryItem(name: key, value: value)
+               queryItems.append(item)
+           }
+           
+        }
+        components.queryItems = queryItems
+        return components.url!
+      }
+    
     
     private static let dateFormatter: DateFormatter = {
           let formatter = DateFormatter()
@@ -97,22 +109,7 @@ struct FlickrAPI {
             return .failure(error)
         }
     }
-    private static func flickrURL(method: Method, parameters: [String:String]?) -> URL {
-        //return URL(string: "")! //for now
-        var components = URLComponents(string: baseURLString)!
-        var queryItems = [URLQueryItem]()
-       
-        if let additionalParams = parameters {
-           for(key, value) in additionalParams {
-               let item = URLQueryItem(name: key, value: value)
-               queryItems.append(item)
-           }
-           
-        }
-        components.queryItems = queryItems
-        return components.url!
-      }
-    
+
 
 
 }

@@ -21,3 +21,4 @@ class Photo {
         self.dateTaken = dateTaken
     }
 }
+
