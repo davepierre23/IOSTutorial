@@ -9,10 +9,6 @@ import Foundation
 import UIKit
 
 
-enum PhotoError: Error {
-    case imageCreationError
-}
-
 
 enum PhotoResult {
     case success([Photo])

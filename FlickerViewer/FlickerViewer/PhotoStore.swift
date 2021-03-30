@@ -7,6 +7,9 @@
 
 import Foundation
 import UIKit
+enum PhotoError: Error {
+    case imageCreationError
+}
 
 class PhotoStore {
         private let session: URLSession = {

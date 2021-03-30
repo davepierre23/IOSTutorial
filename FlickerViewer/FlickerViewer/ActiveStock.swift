@@ -19,11 +19,11 @@ import Foundation
 //MODEL to sed to populate this end point
 //End we will use  https://financialmodelingprep.com/api/v3/actives?apikey=40d61e33f3a413f1c52d3cd0fe1c814e
 struct ActiveStock {
-     private let ticker : String;   // used to save the ticker symbol
-     private let changesPercentage : String
-     private let price : String;
-     private let changes : Double;
-     private let companyName : String;
+      let ticker : String;   // used to save the ticker symbol
+      let changesPercentage : String
+      let price : String;
+      let changes : Double;
+      let companyName : String;
     
     //used to popluate the Stock Profile model
     init?(ticker: String, changesPercentage: String, price: String, companyName: String, changes : Double ) {

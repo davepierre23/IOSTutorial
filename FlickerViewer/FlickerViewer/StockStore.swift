@@ -17,7 +17,7 @@ class StockStore {
     
     
  
-  func fetchStockProfile(ticker: String ,completion: @escaping (StockSearchResults) ->Void){
+  func fetchStockProfile(ticker: String ,completion: @escaping (StockProfileResult) ->Void){
         let url = StockAPI.getStockProfile(ticker: ticker)
         //create a Network request to the API
         print("the url \(url)")
@@ -25,10 +25,9 @@ class StockStore {
           let task = session.dataTask(with: request){
               (data, response, error) -> Void in
 
-              let result = self.processStockSearchRequest(data: data, error: error)
+              let result = self.processStockProfileRequest(data: data, error: error)
               completion(result)
           }
-          task.resume()
         task.resume()
     }
     
@@ -83,8 +82,10 @@ class StockStore {
         else {
             return .failure(error!)
         }
-        return StockAPI.stockProfile(fromJSON: jsonData)
+        return StockAPI.searchStockProfile(fromJSON: jsonData)
     }
+    
+    
 
 }
 

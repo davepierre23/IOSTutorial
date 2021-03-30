@@ -10,9 +10,14 @@ import Foundation
 import UIKit
 
 
+//used to recieve the StockPhoto
+enum StockPhotoError: Error {
+    case imageCreationError
+}
+
 //used for the StockProfile
 enum StockProfileResult {
-    case success(StockProfile?)
+    case success([StockProfile])
     case failure(Error)
 }
 //to change for Stock Search and motive actives
@@ -38,14 +43,14 @@ enum FinancialModelError: Error {
     case invalidJSONData
 }
 
-struct StockAPI {
+class StockAPI {
     //used to get infromation from an API
     //https://financialmodelingprep.com/developer/docs/
     private static let finanaceModelbaseURLString = "https://financialmodelingprep.com"
     private static let financeModelAPIKEY="40d61e33f3a413f1c52d3cd0fe1c814e"
     
     //options found under the Ticker Search
-    private static let exchangeOptions = ["ETF", "MUTUAL_FUND", "COMMODITY" ,"INDEX","CRYPTO", "FOREX", "TSX" , "AMEX" , "NASDAQ" , "NYSE" , "EURONEXT", "XETRA","NSE" ,"LSE"]
+    public static let exchangeOptions = ["ETF", "MUTUAL_FUND", "COMMODITY" ,"INDEX","CRYPTO", "FOREX", "TSX" , "AMEX" , "NASDAQ" , "NYSE" , "EURONEXT", "XETRA","NSE" ,"LSE"]
    //different method that are availble in the API
    enum Method : String {
     case  SYMBOL_SEARCH =  "/api/v3/search"
@@ -121,13 +126,11 @@ struct StockAPI {
          }
          
          return StockSearchResult(symbol: symbol, name: name, currency: currency, stockExchange: stockExchange, exchangeShortName : exchangeShortName )
-         
      }
     
 
     
     static func stockSearchResults(fromJSON data: Data) -> StockSearchResults {
-        
         do {
             let jsonObject = try JSONSerialization.jsonObject(with: data, options: [])
             print(jsonObject)
@@ -164,7 +167,6 @@ struct StockAPI {
         }
     }
     private static func mostActiveStock(json: [String:Any]) -> ActiveStock? {
-         
         guard
            let ticker = json["ticker"] as? String,
            let changesPercentage = json["changesPercentage"] as? String,
@@ -178,21 +180,13 @@ struct StockAPI {
          }
          
         return ActiveStock(ticker: ticker, changesPercentage: changesPercentage, price: price, companyName: companyName, changes : changes )
-         
      }
-    
 
-
-
-
-    
     static func mostActiveStocks(fromJSON data: Data) -> ActiveStockResults {
         
         do {
             let jsonObject = try JSONSerialization.jsonObject(with: data, options: [])
-            
             guard
-           
                 let activeStocksArray = jsonObject as? [[String : Any]]
              
             else {
@@ -218,36 +212,59 @@ struct StockAPI {
             return .failure(error)
         }
     }
-    
-    static func stockProfile(fromJSON data: Data) -> StockProfileResult {
+    static func stockProfile(json: [String:Any] )-> StockProfile? {
         
+        guard let symbol = json["symbol"] as? String,
+                let exchange = json["exchangeShortName"] as? String,
+              let dividend = json["lastDiv"] as? Double,
+                let beta = json["beta"] as? Double,
+                let companyName = json["companyName"] as? String,
+                let country = json["country"] as? String,
+                let photoURl = json["image"] as? String,
+                let url = URL(string: photoURl),
+                let sector = json["sector"] as? String,
+                let industry = json["industry"] as? String,
+                let currentPrice = json["price"] as? Double,
+                let changeInPrice = json["changes"] as? Double
+            else {
+            print("Stock profile")
+                return nil
+            }
+         
+        return StockProfile(symbol: symbol, exchange: exchange, country: country,  companyName : companyName, photoURl: url, sector: sector, industry: industry , changeInPrice:changeInPrice, currentPrice: currentPrice,
+    beta: beta, dividend: dividend )
+
+    }
+    
+    static func searchStockProfile(fromJSON data: Data) -> StockProfileResult {
+     
         do {
+
             let jsonObject = try JSONSerialization.jsonObject(with: data, options: [])
-            print(" asdavead\(jsonObject)")
-            let stockProfiles = jsonObject as? [[String : Any]]
-            print(stockProfiles)
             guard
-                let stockProfile = jsonObject as? [String : Any]
+                let stockProfileResults = jsonObject as? [[String : Any]]
             else {
                     //Unexpected JSON structure
                     return .failure(FinancialModelError.invalidJSONData)
             }
             //iterate through the list of Stock results and add to the lists
-            var finalStockProfile : StockProfile? = nil;
-            finalStockProfile = StockProfile(json: stockProfile);
-            
-            if finalStockProfile == nil{
+            var stockProfiles = [StockProfile]();
+            for aProfile in stockProfileResults {
+                if let stockResult = stockProfile(json: aProfile){
+                    stockProfiles.append(stockResult)
+                }
+            }
+            if stockProfileResults.isEmpty && stockProfiles.isEmpty {
                 //Not able to parse the Stock API data
                 //Maybe the JSON format for photos has changed
                 return .failure(FinancialModelError.invalidJSONData)
             }
-            return .success(finalStockProfile)
+            return .success(stockProfiles)
         }
         catch let error {
             return .failure(error)
         }
     }
-    
 }
 
 
