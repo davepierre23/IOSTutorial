@@ -12,97 +12,15 @@ class PhotosViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        print("running Fickr Viewer")
-//        let url = FlickrAPI.recentPhotosURL()
-//        print("request url:")
-//        print(url)
-//        let store = PhotoStore()
-//        let ticker  = "CU.TO"
-//        loadStockProfile(ticker: ticker)
-//        loadMostActiveStocks()
-//        searchStock(query: "bank", exchange: "NASDAQ")
-        
-//
-//            let stockStore = StockStore()
-//            stockStore.fetchStockProfile(ticker: ticker , completion: {
-//                stockProfileResult in
-//                switch stockProfileResult {
-//                case let .success(stockProfileResult):
-//                    print("Successfully found \(String(describing: stockProfileResult)) Stocks.")
-//                    if let firstPhoto = stockProfileResult.first {
-//                        stockStore.fetchImage(for: firstPhoto) {
-//                        (imageResult) -> Void in
-//                            switch imageResult {
-//                            case let .success(image): //self.imageView.image = image
-//                                OperationQueue.main.addOperation {
-//                                    self.imageView.image = image
-//                                }
-//                            case let .failure(error): print("ERROR downloading actual image: \(error)")
-//                            }
-//                        }
-//                    }
-//                case let .failure(error):
-//                    print ("Error fetching recent Stocks: \(error)")
-//                }
-//
-//            })
-//        store.fetchRecentPhotos {
-//            (photosResult) -> Void in
-//            switch photosResult {
-//            case let .success(photos):
-//                print("Successfully found \(photos.count) photos.")
-//                if let firstPhoto = photos.first {
-//                    store.fetchImage(for: firstPhoto) {
-//                    (imageResult) -> Void in
-//                        switch imageResult {
-//                        case let .success(image): //self.imageView.image = image
-//                            OperationQueue.main.addOperation {
-//                                self.imageView.image = image
-//                            }
-//                        case let .failure(error): print("ERROR downloading actual image: \(error)")
-//                        }
-//                    }
-//                }
-//
-//            case let .failure(error):
-//                print ("Error fetching recent photos: \(error)")
-//            }
-//        }
-        
-//
-//                print("running Fickr Viewer")
-//                let url = FlickrAPI.recentPhotosURL()
-//                print("request url:")
-//                print(url)
-//                let store = PhotoStore()
-//                store.fetchRecentPhotos {
-//                    (photosResult) -> Void in
-//                    switch photosResult {
-//                    case let .success(photos):
-//                        print("Successfully found \(photos.count) photos.")
-//                        if let firstPhoto = photos.first {
-//                            store.fetchImage(for: firstPhoto) {
-//                            (imageResult) -> Void in
-//                                switch imageResult {
-//                                case let .success(image): //self.imageView.image = image
-//                                    OperationQueue.main.addOperation {
-//                                        self.imageView.image = image
-//                                    }
-//                                case let .failure(error): print("ERROR downloading actual image: \(error)")
-//                                }
-//                            }
-//                        }
-//
-//                    case let .failure(error):
-//                        print ("Error fetching recent photos: \(error)")
-//                    }
-//                }
-        
-        
-        loadPicture()
-        
-        
-      
+        print("running Fickr Viewer")
+        let url = FlickrAPI.recentPhotosURL()
+        print("request url:")
+        print(url)
+        let ticker  = "CU.TO"
+        loadStockProfile(ticker: ticker)
+        loadMostActiveStocks()
+        searchStock(query: "bank", exchange: "NASDAQ")
+    
     
 
         
@@ -124,11 +42,25 @@ class PhotosViewController: UIViewController {
     }
     func loadStockProfile(ticker:String) {
         let stockStore = StockStore()
-        stockStore.fetchStockProfile(ticker: ticker , completion: {
+        stockStore.fetchStockProfile(ticker: "CU.to" , completion: {
             stockProfileResult in
             switch stockProfileResult {
             case let .success(stockProfileResult):
                 print("Successfully found \(String(describing: stockProfileResult)) Stocks.")
+                if let firstPhoto = stockProfileResult.first {
+                    print(firstPhoto)
+                    stockStore.fetchImage(for: firstPhoto) {
+                    (imageResult) -> Void in
+                        switch imageResult {
+                        case let .success(image): //self.imageView.image = image
+                            OperationQueue.main.addOperation {
+                                self.imageView.image = image
+                            }
+                        case let .failure(error): print("ERROR downloading actual image: \(error)")
+                        }
+                    }
+                }
+
             case let .failure(error):
                 print ("Error fetching recent Stocks: \(error)")
             }
@@ -140,32 +72,7 @@ class PhotosViewController: UIViewController {
     
     func loadPicture(){
         
-                print("running Fickr Viewer")
-                let stockStore = StockStore()
-                stockStore.fetchStockProfile(ticker: "CU.to" , completion: {
-                    stockProfileResult in
-                    switch stockProfileResult {
-                    case let .success(stockProfileResult):
-                        print("Successfully found \(String(describing: stockProfileResult)) Stocks.")
-                        if let firstPhoto = stockProfileResult.first {
-                            print(firstPhoto)
-                            stockStore.fetchImage(for: firstPhoto) {
-                            (imageResult) -> Void in
-                                switch imageResult {
-                                case let .success(image): //self.imageView.image = image
-                                    OperationQueue.main.addOperation {
-                                        self.imageView.image = image
-                                    }
-                                case let .failure(error): print("ERROR downloading actual image: \(error)")
-                                }
-                            }
-                        }
 
-                    case let .failure(error):
-                        print ("Error fetching recent Stocks: \(error)")
-                    }
-                    
-                })
 
              
         
