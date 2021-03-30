@@ -51,7 +51,7 @@ import UIKit
  */
 //MODEL to sed to populate this end point
 //End we will use  https://financialmodelingprep.com/api/v3/profile/CU.TO?apikey=40d61e33f3a413f1c52d3cd0fe1c814e
-struct StockProfile {
+class StockProfile {
       let symbol : String;   // used to save the ticker symbol
       let exchange : String
       let country : String;
@@ -89,9 +89,5 @@ struct StockProfile {
 
     }
     
-    mutating func writeWord(image: UIImage) {
-        self.image = image
-        
-    }
 
 }

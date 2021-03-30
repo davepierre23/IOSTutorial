@@ -8,6 +8,7 @@
 
 
 import Foundation
+import UIKit
 
 class StockStore {
     private let session: URLSession = {
@@ -84,6 +85,35 @@ class StockStore {
         }
         return StockAPI.searchStockProfile(fromJSON: jsonData)
     }
+    
+    func fetchImage(for photo: StockProfile, completion: @escaping (ImageResult)->Void){
+        let photoURL = photo.photoURl
+        let request = URLRequest(url: photoURL)
+        let task = session.dataTask(with: request) {
+            (data, response, error) -> Void in
+            let result = self.processImageRequest(data: data, error: error)
+            
+            if case let .success(image) = result {
+                photo.image = image
+            }
+            
+            completion(result)
+
+        }
+        task.resume()
+    }
+    
+    private func processImageRequest(data: Data?, error: Error?) ->ImageResult {
+            guard
+            let imageData = data,
+            let image = UIImage(data: imageData)
+            else {
+                //could not create image
+                if data == nil { return .failure(error!) }
+                else {return .failure(PhotoError.imageCreationError) }
+            }
+            return .success(image)
+        }
     
     
 
